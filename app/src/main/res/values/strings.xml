@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">pomodoro</string>
+    <string name="add">Add Stopwatch</string>
+    <string name="time">00:00:00</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="add_timer">add timer</string>
+    <string name="default_minute">25</string>
+    <string name="default_zero">00</string>
+    <string name="colon">:</string>
+    <string name="h">HH</string>
+    <string name="m">MM</string>
+    <string name="s">SS</string>
+    <string name="time_out">Time is out!</string>
+    <string name="time_out1">/ (&#127866;_&#127866;) /</string>
+    <string name="time_out2">\\ (&#127866;_&#127866;) \\</string>
+</resources>
