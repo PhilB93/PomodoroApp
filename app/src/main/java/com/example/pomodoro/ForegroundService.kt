@@ -62,7 +62,7 @@ class ForegroundService : Service() {
 
     private fun commandStart(startTime: Long) {
         if (isServiceStarted) return
-
+//
         Log.i("TAG", "commandStart()")
         try {
             moveToStartedState()
