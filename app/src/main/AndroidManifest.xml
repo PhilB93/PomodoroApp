@@ -12,6 +12,7 @@
         android:roundIcon="@drawable/circle"
         android:launchMode="singleTop"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/Theme.Pomodoro">
         <activity android:name=".MainActivity">
             <intent-filter>

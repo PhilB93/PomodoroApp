@@ -63,7 +63,9 @@ class MainActivity : AppCompatActivity(), TimerListener, LifecycleObserver {
         }
     }
 
+    override fun onBackPressed() {
 
+    }
     override fun start(id: Int) {
         changeTimer(id, null, true)
     }
