@@ -130,18 +130,22 @@ class TimerViewHolder(
 
     private fun initButtonsListeners(timer: Timer) {
         binding.bntStartStop.setOnClickListener {
-            if (timer.isStarted) {
-                binding.bntStartStop.text = START
-                listener.stop(timer.id, timer.leftMS)
-            } else {
-                startTimer(timer)
-                listener.start(timer.id)
+            if (timer!=null) {
+                if (timer.isStarted) {
+                    binding.bntStartStop.text = START
+                    listener.stop(timer.id, timer.leftMS)
+                } else {
+                    startTimer(timer)
+                    listener.start(timer.id)
+                }
             }
         }
 
         binding.btnDelete.setOnClickListener {
             binding.bntStartStop.isClickable = false
+
             listener.delete(timer.id)
+
         }
     }
 
