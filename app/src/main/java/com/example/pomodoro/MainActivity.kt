@@ -60,17 +60,17 @@ class MainActivity : AppCompatActivity(), TimerListener, LifecycleObserver {
     private fun addNewTimer() {
         if (timers.size <= 100) {
 
-                val hours: Int? = binding.enterHoursEditText.text.toString().toIntOrNull()
-                val minutes: Int? = binding.enterMinutesEditText.text.toString().toIntOrNull()
-                val seconds: Int? = binding.enterSecondsEditText.text.toString().toIntOrNull()
-                if (hours != null && minutes != null && seconds != null)
-                    if (hours != 0 || minutes != 0 || seconds != 0){
-                        val milliSeconds: Long = (hours * 3600 + minutes * 60 + seconds) * 1000L
-                timers.add(Timer(nextId++, milliSeconds, false))
-                timerAdapter.submitList(timers.toList())
-            }
+            val hours: Int? = binding.enterHoursEditText.text.toString().toIntOrNull()
+            val minutes: Int? = binding.enterMinutesEditText.text.toString().toIntOrNull()
+            val seconds: Int? = binding.enterSecondsEditText.text.toString().toIntOrNull()
+            if (hours != null && minutes != null && seconds != null)
+                if (hours != 0 || minutes != 0 || seconds != 0) {
+                    val milliSeconds: Long = (hours * 3600 + minutes * 60 + seconds) * 1000L
+                    timers.add(Timer(nextId++, milliSeconds, false))
+                    timerAdapter.submitList(timers.toList())
+                }
 
-    }
+        }
     }
 
     override fun start(id: Int) {
@@ -78,22 +78,32 @@ class MainActivity : AppCompatActivity(), TimerListener, LifecycleObserver {
             if (it.isStarted) stop(it.id, it.leftMS)
         }
         val index = timers.indexOf(timers.find { it.id == id })
-        timers[index].run {
-            isStarted = true
-            endTime = System.currentTimeMillis() + leftMS
-            currentFinishTime = endTime
+        println(index)
+        if (index >= 0) {
+            timers[index].run {
+                isStarted = true
+                endTime = System.currentTimeMillis() + leftMS
+                currentFinishTime = endTime
+            }
+        } else {
+            println(index)
         }
         timerAdapter.submitList(timers.toList())
+
     }
 
     override fun stop(id: Int, currentMs: Long) {
         val index = timers.indexOf(timers.find { it.id == id })
-        timers[index].run {
-            leftMS = if (isWorked) startMs
-            else endTime - System.currentTimeMillis()
-            isStarted = false
+        if (index>=0) {
+            timers[index].run {
+                leftMS = if (isWorked) startMs
+                else endTime - System.currentTimeMillis()
+                isStarted = false
+            }
+            currentFinishTime = 0L
+        }else{
+            println(index)
         }
-        currentFinishTime = 0L
         timerAdapter.submitList(timers.toList())
     }
 
