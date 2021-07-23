@@ -10,100 +10,110 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/add_new_timer_button"
+        android:background="?attr/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/timer_item" />
 
-    <Button
-        android:id="@+id/add_new_timer_button"
-        android:layout_width="120dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_panel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/button_style"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/add_timer"
-        android:textColor="@color/white"
+        android:background="?attr/colorPrimaryDark"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <EditText
-        android:id="@+id/enterHoursEditText"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="true"
-        android:hint="@string/h"
-        android:inputType="number"
-        android:maxLength="2"
-        android:text="@string/default_zero"
-        android:textAlignment="center"
-        android:theme="@style/Theme.Pomodoro"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/colon1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="40dp"
-        android:text="@string/colon"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/enterHoursEditText" />
+            <EditText
+                android:id="@+id/enterHoursEditText"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="32dp"
+                android:ems="10"
+                android:focusableInTouchMode="true"
+                android:hint="@string/h"
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="@string/default_zero"
+                android:textAlignment="center"
+                android:theme="@style/Theme.Pomodoro" />
 
-    <EditText
-        android:id="@+id/enterMinutesEditText"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="true"
-        android:hint="@string/m"
-        android:inputType="number"
-        android:maxLength="2"
-        android:text="@string/default_minute"
-        android:textAlignment="center"
-        android:theme="@style/Theme.Pomodoro"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/colon1" />
+            <TextView
+                android:id="@+id/colon1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="40dp"
+                android:text="@string/colon"
+                android:textAlignment="center"
+                android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/colon2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="40dp"
-        android:text="@string/colon"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/enterMinutesEditText" />
+            <EditText
+                android:id="@+id/enterMinutesEditText"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="32dp"
+                android:ems="10"
+                android:focusableInTouchMode="true"
+                android:hint="@string/m"
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="@string/default_minute"
+                android:textAlignment="center"
+                android:theme="@style/Theme.Pomodoro" />
 
-    <EditText
-        android:id="@+id/enterSecondsEditText"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="true"
-        android:hint="@string/s"
-        android:inputType="number"
-        android:maxLength="2"
-        android:text="@string/default_zero"
-        android:textAlignment="center"
-        android:theme="@style/Theme.Pomodoro"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/colon2" />
+            <TextView
+                android:id="@+id/colon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="40dp"
+                android:text="@string/colon"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/enterSecondsEditText"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="32dp"
+                android:ems="10"
+                android:focusableInTouchMode="true"
+                android:hint="@string/s"
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="@string/default_zero"
+                android:textAlignment="center"
+                android:theme="@style/Theme.Pomodoro" />
+
+            <Button
+                android:id="@+id/bnt_addTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:padding="6dp"
+                android:text="@string/add_timer"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

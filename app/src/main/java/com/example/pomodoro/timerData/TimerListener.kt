@@ -1,4 +1,4 @@
-package com.example.pomodoro
+package com.example.pomodoro.timerData
 
 interface TimerListener {
     fun start(id: Int)

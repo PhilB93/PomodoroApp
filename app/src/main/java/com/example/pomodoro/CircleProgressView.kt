@@ -27,7 +27,7 @@ class CircleProgressView @JvmOverloads constructor(
                 defStyleAttr,
                 0
             )
-            color = styledAttrs.getColor(R.styleable.CircleProgressView_custom_color, Color.RED)
+            color = styledAttrs.getColor(R.styleable.CircleProgressView_custom_color, Color.GREEN)
             style = styledAttrs.getInt(R.styleable.CircleProgressView_custom_style, FILL)
             styledAttrs.recycle()
         }

@@ -2,76 +2,99 @@ package com.example.pomodoro
 
 
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pomodoro.databinding.ActivityMainBinding
+import com.example.pomodoro.timerData.Timer
+import com.example.pomodoro.timerData.TimerAdapter
+import com.example.pomodoro.timerData.TimerListener
 
-import org.greenrobot.eventbus.Subscribe
 
 class MainActivity : AppCompatActivity(), TimerListener, LifecycleObserver {
     private lateinit var binding: ActivityMainBinding
-
     private val timerAdapter = TimerAdapter(this)
-    private val timers = arrayListOf<Timer>()
     private var nextId = 0
-    private var timerMillis = 1000L
-    private var timerId = -1
+    private val timers = mutableListOf<Timer>()
+    private var currentFinishTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (savedInstanceState != null) {
-            nextId = savedInstanceState.getInt(NEXT_ID)
-            val size = savedInstanceState.getInt(SIZE_TIMERS)
-            for (i in 0 until size) {
-                val id = savedInstanceState.getInt("$ID$i")
-                val currentMs = savedInstanceState.getLong("$MS$i")
-                val isStarted = savedInstanceState.getBoolean("$START$i")
-                timers.add(Timer(id, currentMs, isStarted))
+        binding.apply {
+
+            recycler.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = timerAdapter
             }
-            timerAdapter.submitList(timers.toList())
-        }
 
-        binding.recycler.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = timerAdapter
-        }
+            bntAddTimer.setOnClickListener {
 
-        binding.addNewTimerButton.setOnClickListener {
-            if (timers.size <= 1000) {
-                val hours: Int? = binding.enterHoursEditText.text.toString().toIntOrNull()
-                val minutes: Int? = binding.enterMinutesEditText.text.toString().toIntOrNull()
-                val seconds: Int? = binding.enterSecondsEditText.text.toString().toIntOrNull()
-                if (hours != null && minutes != null && seconds != null)
-                    if (hours != 0 || minutes != 0 || seconds != 0) {
-                        val milliSeconds: Long = (hours * 3600 + minutes * 60 + seconds) * 1000L
-                        timers.add(Timer(nextId++, milliSeconds, false))
-                        timerAdapter.submitList(timers.toList())
-                    }
+                addNewTimer()
             }
         }
     }
 
     override fun onBackPressed() {
+        AlertDialog.Builder(this, R.style.AlertDialog).apply {
+            setTitle("Quit the application?")
+            setPositiveButton("Yes") { _, _ ->
+                currentFinishTime = 0L
+                super.onBackPressed()
+            }
+            setNegativeButton("No") { _, _ ->
+            }
+            setCancelable(true)
+        }.create().show()
+    }
+
+    private fun addNewTimer() {
+        if (timers.size <= 100) {
+
+                val hours: Int? = binding.enterHoursEditText.text.toString().toIntOrNull()
+                val minutes: Int? = binding.enterMinutesEditText.text.toString().toIntOrNull()
+                val seconds: Int? = binding.enterSecondsEditText.text.toString().toIntOrNull()
+                if (hours != null && minutes != null && seconds != null)
+                    if (hours != 0 || minutes != 0 || seconds != 0){
+                        val milliSeconds: Long = (hours * 3600 + minutes * 60 + seconds) * 1000L
+                timers.add(Timer(nextId++, milliSeconds, false))
+                timerAdapter.submitList(timers.toList())
+            }
 
     }
+    }
+
     override fun start(id: Int) {
-        changeTimer(id, null, true)
+        timers.map {
+            if (it.isStarted) stop(it.id, it.leftMS)
+        }
+        val index = timers.indexOf(timers.find { it.id == id })
+        timers[index].run {
+            isStarted = true
+            endTime = System.currentTimeMillis() + leftMS
+            currentFinishTime = endTime
+        }
+        timerAdapter.submitList(timers.toList())
     }
 
     override fun stop(id: Int, currentMs: Long) {
-        changeTimer(id, currentMs, false)
+        val index = timers.indexOf(timers.find { it.id == id })
+        timers[index].run {
+            leftMS = if (isWorked) startMs
+            else endTime - System.currentTimeMillis()
+            isStarted = false
+        }
+        currentFinishTime = 0L
+        timerAdapter.submitList(timers.toList())
     }
 
     override fun delete(id: Int) {
@@ -79,36 +102,13 @@ class MainActivity : AppCompatActivity(), TimerListener, LifecycleObserver {
         timerAdapter.submitList(timers.toList())
     }
 
-    private fun changeTimer(id: Int, currentMs: Long?, isStarted: Boolean) {
-        val newTimers = mutableListOf<Timer>()
-        timers.forEach {
-            newTimers.add(
-                if (it.id == id) Timer(it.id, currentMs ?: it.currentMS, isStarted)
-                else it
-            )
-        }
-        timerAdapter.submitList(newTimers)
-        timers.clear()
-        timers.addAll(newTimers)
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onAppBackgrounded() {
-        for (i in timers)
-        {
-            if (i.isStarted) {
-                timerMillis = i.currentMS
-                timerId = i.id
-            }
-        }
         val startIntent = Intent(this, ForegroundService::class.java)
-        startIntent.run {
-            putExtra(COMMAND_ID, COMMAND_START)
-            putExtra(STARTED_TIMER_TIME_MS, timerMillis)
-            putExtra(NEXT_ID, timerId)
-        }
+        startIntent.putExtra(COMMAND_ID, COMMAND_START)
+        startIntent.putExtra(STARTED_TIMER_TIME_MS, currentFinishTime)
         startService(startIntent)
-
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -118,22 +118,8 @@ class MainActivity : AppCompatActivity(), TimerListener, LifecycleObserver {
         startService(stopIntent)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(NEXT_ID, nextId)
-        outState.putInt(SIZE_TIMERS, timers.size)
-        for (i in timers.indices) {
-            outState.putInt("$ID$i", timers[i].id)
-            outState.putLong("$MS$i", timers[i].currentMS)
-            outState.putBoolean("$START$i", timers[i].isStarted)
-        }
-    }
-
-    private companion object {
-        const val NEXT_ID = "nextID"
-        const val ID = "id"
-        const val MS = "ms"
-        const val START = "start"
-        const val SIZE_TIMERS = "size of timers"
+    override fun onDestroy() {
+        super.onDestroy()
+        onAppForegrounded()
     }
 }

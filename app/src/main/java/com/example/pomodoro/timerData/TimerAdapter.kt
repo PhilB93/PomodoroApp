@@ -1,4 +1,4 @@
-package com.example.pomodoro
+package com.example.pomodoro.timerData
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,7 +13,7 @@ class TimerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = TimerItemBinding.inflate(layoutInflater, parent, false)
-        return TimerViewHolder(binding, listener, binding.root.context.resources)
+        return TimerViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: TimerViewHolder, position: Int) =
@@ -25,7 +25,7 @@ class TimerAdapter(
                 oldItem.id == newItem.id
 
             override fun areContentsTheSame(oldItem: Timer, newItem: Timer): Boolean =
-                oldItem.currentMS == newItem.currentMS && oldItem.isStarted == newItem.isStarted
+                oldItem.leftMS == newItem.leftMS && oldItem.isStarted == newItem.isStarted
 
             override fun getChangePayload(oldItem: Timer, newItem: Timer) = Any()
         }
